@@ -1,12 +1,18 @@
+extern crate sdl2;
+extern crate gl;
+
 use sdl2::event::Event;
 
 fn main() {
     let sdl = sdl2::init().unwrap();
     let video_subsystem = sdl.video().unwrap();
+    let gl_attr = video_subsystem.gl_attr();
+    gl_attr.set_context_profile(sdl2::video::GLProfile::Core);
+    gl_attr.set_context_version(3, 3);
+
     let window = video_subsystem
         .window("Fractals", 800, 600)
         .opengl()
-        .resizable()
         .build()
         .unwrap();
 
@@ -14,6 +20,12 @@ fn main() {
     let _gl = gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const std::os::raw::c_void);
 
     println!("Hello, world!");
+
+    unsafe {
+        gl::Viewport(0, 0, 800, 600);
+    }
+
+    
 
     let mut event_pump = sdl.event_pump().unwrap();
     'main: loop {
