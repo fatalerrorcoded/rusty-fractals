@@ -63,7 +63,7 @@ fn main() {
                     ratio = width as f32 / height as f32;
                 },
                 Event::MouseWheel { y, .. } => {
-                    target_zoom += (y as f64) * 0.2;
+                    target_zoom += (y as f64) * target_zoom;
                 },
                 _ => ()
             };
