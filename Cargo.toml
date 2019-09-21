@@ -1,5 +1,5 @@
 [package]
-name = "rusty-fractals"
+name = "rusty_fractals"
 version = "0.1.0"
 authors = ["fatalerrorcoded"]
 edition = "2018"
