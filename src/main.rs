@@ -30,8 +30,12 @@ fn main() {
 
     println!("Hello, world!");
 
+    let mut window_size = (800, 600);
+
     unsafe {
-        gl::Viewport(0, 0, 800, 600);
+        gl::Enable(0x8861);
+        gl::Viewport(0, 0, window_size.0, window_size.1);
+        gl::ClearColor(0.0, 0.0, 0.0, 1.0);
     }
 
     let mut zoom: f64 = 1.0;
@@ -55,6 +59,7 @@ fn main() {
                 Event::Quit {..} => break 'main,
                 Event::Window { win_event: WindowEvent::Resized(width, height), .. } => {
                     unsafe { gl::Viewport(0, 0, width, height); }
+                    window_size = (width, height);
                     ratio = width as f32 / height as f32;
                 },
                 Event::MouseWheel { y, .. } => {
@@ -68,20 +73,19 @@ fn main() {
 
         let keyboard_state = KeyboardState::new(&event_pump);
         if keyboard_state.is_scancode_pressed(Scancode::Left)
-            || keyboard_state.is_scancode_pressed(Scancode::A) { fractal_pos.0 -= (delta_time / 1000.0 * zoom) as f32; }
+            || keyboard_state.is_scancode_pressed(Scancode::A) { fractal_pos.0 -= ((delta_time / 1000.0) / zoom) as f32; }
         if keyboard_state.is_scancode_pressed(Scancode::Right)
-            || keyboard_state.is_scancode_pressed(Scancode::D) { fractal_pos.0 += (delta_time / 1000.0 * zoom) as f32; }
+            || keyboard_state.is_scancode_pressed(Scancode::D) { fractal_pos.0 += ((delta_time / 1000.0) / zoom) as f32; }
         if keyboard_state.is_scancode_pressed(Scancode::Up)
-            || keyboard_state.is_scancode_pressed(Scancode::W) { fractal_pos.1 -= (delta_time / 1000.0 * zoom) as f32; }
+            || keyboard_state.is_scancode_pressed(Scancode::W) { fractal_pos.1 -= ((delta_time / 1000.0) / zoom) as f32; }
         if keyboard_state.is_scancode_pressed(Scancode::Down)
-            || keyboard_state.is_scancode_pressed(Scancode::S) { fractal_pos.1 += (delta_time / 1000.0 * zoom) as f32; }
+            || keyboard_state.is_scancode_pressed(Scancode::S) { fractal_pos.1 += ((delta_time / 1000.0) / zoom) as f32; }
 
         zoom = zoom.lerp(target_zoom, delta_time / 700.0);
         println!("Ratio: {}, Zoom: {}", ratio, zoom as f32);
 
         unsafe {
-            gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
         }
 
         let fractal_matrix: &[f32] = &[
@@ -91,7 +95,7 @@ fn main() {
             -fractal_pos.0, -fractal_pos.1, 0.0, 1.0
         ];
 
-        fractal.draw(fractal_matrix);
+        fractal.draw(fractal_matrix, window_size);
 
         window.gl_swap_window();
     }

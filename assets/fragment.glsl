@@ -2,17 +2,18 @@
 
 precision highp float;
 uniform mat4 uMVPMatrix;
+uniform vec2 uWindowSize;
 
 void main() {
 	//Scale point by input transformation matrix
-	vec2 p = (uMVPMatrix * vec4(gl_PointCoord,0,1)).xy;
+	vec2 p = (uMVPMatrix * vec4(gl_FragCoord.xy / uWindowSize, 0, 1)).xy;
 	vec2 c = p;
 
 	//Set default color to HSV value for black
 	vec3 color=vec3(0.0,0.0,0.0);
 
 	//Max number of iterations will arbitrarily be defined as 100. Finer detail with more computation will be found for larger values.
-	for(int i=0;i<100;i++){
+	for(int i=0;i<1000;i++){
 		//Perform complex number arithmetic
 		p= vec2(p.x*p.x-p.y*p.y,2.0*p.x*p.y)+c;
 		

@@ -31,15 +31,15 @@ impl Fractal {
         Ok(Fractal { program })
     }
 
-    pub fn draw(&self, mvp_matrix: &[f32]) {
-        println!("{:?}", mvp_matrix);
+    pub fn draw(&self, mvp_matrix: &[f32], window_size: (i32, i32)) {
         self.program.set_used();
-        let position_handle = unsafe { gl::GetAttribLocation(self.program.id(), CString::new("vPosition").unwrap().as_ptr()) };
-        let matrix_handle = unsafe { gl::GetUniformLocation(self.program.id(), CString::new("uMVPMatrix").unwrap().as_ptr()) };
+        let position_handle = self.program.get_attrib_location("vPosition").unwrap();
+        let matrix_handle = self.program.get_uniform_location("uMVPMatrix").unwrap();
+        let window_size_handle = self.program.get_uniform_location("uWindowSize").unwrap();
         
         unsafe {
-            gl::UniformMatrix4fv(matrix_handle, 1, false as gl::types::GLboolean, mvp_matrix.as_ptr());
-
+            gl::UniformMatrix4fv(matrix_handle, 1, 0, mvp_matrix.as_ptr());
+            gl::Uniform2f(window_size_handle, window_size.0 as f32, window_size.1 as f32);
             gl::EnableVertexAttribArray(position_handle as u32);
             gl::VertexAttribPointer(
                 position_handle as u32, 3,

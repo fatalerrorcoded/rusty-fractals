@@ -96,6 +96,23 @@ impl ShaderProgram {
     pub fn set_used(&self) {
         unsafe { gl::UseProgram(self.id); }
     }
+
+    pub fn get_attrib_location(&self, name: &str) -> Result<gl::types::GLint, gl::types::GLuint> {
+        let cstr = CString::new(name).unwrap();
+        let handle = unsafe { gl::GetAttribLocation(self.id, cstr.as_ptr()) };
+        let success = unsafe { gl::GetError() };
+        if success != gl::NO_ERROR { return Err(success); }
+        if handle == -1 { return Err(0x0501); }
+        Ok(handle)
+    }
+
+    pub fn get_uniform_location(&self, name: &str) -> Result<gl::types::GLint, gl::types::GLuint> {
+        let cstr = CString::new(name).unwrap();
+        let handle = unsafe { gl::GetUniformLocation(self.id, cstr.as_ptr()) };
+        let success = unsafe { gl::GetError() };
+        if success != gl::NO_ERROR { return Err(success); }
+        Ok(handle)
+    }
 }
 
 impl Drop for ShaderProgram {
