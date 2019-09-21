@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 sdl2 = { version = "0.32.2", features = [ "bundled" ] }
 gl = "0.13.0"
+lerp = "0.2.0"

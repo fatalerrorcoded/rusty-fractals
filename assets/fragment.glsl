@@ -1,3 +1,5 @@
+#version 330 core
+
 precision highp float;
 uniform mat4 uMVPMatrix;
 
